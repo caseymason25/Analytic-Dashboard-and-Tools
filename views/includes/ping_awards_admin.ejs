@@ -1,0 +1,38 @@
+<div style="display:none"><img src="/css/images/ui-icons_444444_256x240.png" /><img src="/css/images/ui-icons_555555_256x240.png" /></div>
+<div class="help-link-container">
+<a href="/helpfiles/Ping-Award-Admin-Work-Instructions.pdf" alt="Work Instructions Download" title="Work Instructions Download" class="btn btn-sm btn-info">
+<i class="fa fa-question-circle" aria-hidden="true"></i>
+<span>Help</span>
+</a>
+</div>
+<h1 class="page-header">Ping Awards Admin Panel</h1>
+<div>
+  <div class="ping-awards-form-container">
+    <form action="javascript:get_ping_awards_admin();">
+      <label for="ping_awards_admin_TEAM_ID">Select Group(s):</label>
+      <select id='ping_awards_admin_TEAM_ID' class="basic-select" name="ping_awards_admin_TEAM_ID" required multiple>
+        <%
+        if(typeof groups !== 'undefined') {
+          for(var i=0;i < groups.length;i++) {
+            %>
+            <option value='<%= groups[i][1] %>'><%= groups[i][0] %></option>
+            <%
+          }
+        }
+        %>
+      </select>
+      <span class="ping-admin-date-select">
+        <label for="ping-admin-start-date">Start Date:</label>
+        <input type="text" id="ping-admin-start-date" name="ping_admin_start_date" required />
+      </span>
+      <span class="ping-admin-date-select">
+        <label for="ping-admin-end-date">End Date:</label>
+        <input type="text" id="ping-admin-end-date" name="ping_admin_end_date" required />
+      </span>
+      <span>
+        <input type="submit" class="refresh-button" value="Load Pings" />
+      </span>
+    </form>
+  </div>
+</div>
+<div id="ping-awards-admin-body"></div>

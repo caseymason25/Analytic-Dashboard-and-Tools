@@ -1,0 +1,65 @@
+<div class="help-link-container">
+<a href="/helpfiles/Ping-Award-Submission-Work-Instructions.pdf" alt="Work Instructions Download" title="Work Instructions Download" class="btn btn-sm btn-info">
+<i class="fa fa-question-circle" aria-hidden="true"></i>
+<span>Help</span>
+</a>
+</div>
+<h1 class="page-header">Ping Award Submission</h1>
+<div class="ping-awards-manual-container">
+  <div class="ping-awards-explanation">
+    <img src="/img/mrpinglarge.png" />
+    <p>The Ping Award is recognition of the positive relationships established between associates and clients. When the impact is significant and the client is willing to take the time to provide great feedback about the work an associate performed to resolve an issue, recognition is due. Cerner Connect associates who are recognized for their excellent client service via survey or email are eligible for this award.</p>
+
+    <p><span style="font-weight:bold;">Frequency:</span> Submit daily; winners selected monthly</p>
+
+    <p>
+      <span style="font-weight:bold;">Criteria/Who can nominate?</span>
+      <ul>
+        <li>Associate must be specifically called out by name</li>
+        <li>Associates must be recognized for their excellent customer service</li>
+        <li>The associate can be recognized via survey or email to management</li>
+      </ul>
+    </p>
+
+    <p><span style="font-weight:bold;">Winner selection process:</span> Connect Service Improvement team will review the monthly nominations and select winners.</p>
+
+    <p><span style="font-weight:bold;">Number of Winners:</span> 8 Cerner Connect associates per month; 6 Cerner Connect associates per year</p>
+
+    <p><span style="font-weight:bold;">Each Winner will receive:</span> $50 NOTT</p>
+  </div>
+
+  <hr/>
+
+  <div class="ping-form ping-form-manual">
+    <form action="javascript:save_ping_awards_manual()">
+      <div class="ping-form-errors" id="ping-form-errors">
+      </div>
+      <div class="ping-form-field"><label for="ping-team-dropdown">Team <span class="required-asterisk">*</span></label>
+        <select id="ping-team-dropdown" class="ping-team-dropdown" name="ping-team-dropdown" required>
+          <option value="" selected="selected">Select a team (required)</option>
+          <%
+          if(typeof teams !== 'undefined') {
+            for(var team_var=0;team_var < teams.length;team_var++) {
+              %>
+              <option value='<%= teams[team_var][0] %>'><%= teams[team_var][1] %></option>
+              <%
+            }
+          }
+          %>
+        </select>
+      </div>
+      <div class="ping-form-field ui-front"><label for="ping-form-manual-name">Recipient&rsquo;s Name <span class="required-asterisk">*</span></label><input type="text" id="ping-form-manual-name" name="ping_form_manual_name" placeholder="LastName,FirstName or Associate ID (required)" associateEmail = "" required /></div>
+      <div class="ping-form-field"><label for="ping-form-manual-ticket">Ticket Number</label><input type="text" id="ping-form-manual-ticket" name="ping_form_manual_ticket" placeholder="SR or Incident Number" /></div>
+      <div class="ping-form-field"><label for="ping-form-manual-name">Client Mnemonic</label><input type="text" id="ping-form-manual-client" name="ping_form_manual_client" placeholder="Enter client mnemonic..." /></div>
+      <div class="ping-form-field"><label for="ping-form-manual-textarea">Recognition Description <span class="required-asterisk">*</span></label><textarea id="ping-form-manual-textarea" name="ping_form_manual_textarea" placeholder="Enter a description... (required)" required></textarea></div>
+      <p><em><span class="required-asterisk">*</span> Indicates required field</em></p>
+      <input type="submit" class="refresh-button" value="Submit Ping" />
+
+    </form>
+  </div>
+</div>
+
+<div class="ping-awards-manual-complete">
+  <p>Ping has been submitted - Thank You!</p>
+  <button class='refresh-button' onclick="javascript:load_manual_ping_awards();">Submit Another Ping!</button>
+</div>

@@ -1,0 +1,62 @@
+<div style="display:none"><img src="/css/images/ui-icons_444444_256x240.png" /><img src="/css/images/ui-icons_555555_256x240.png" /></div>
+<div class="help-link-container">
+<a href="/helpfiles/Ping-Award-Submission-Tool-Work-Instructions.pdf" alt="Work Instructions Download" title="Work Instructions Download" class="btn btn-sm btn-info">
+<i class="fa fa-question-circle" aria-hidden="true"></i>
+<span>Help</span>
+</a>
+</div>
+<h1 class="page-header">Team Ping Awards Submission Tool</h1>
+
+<div class="ping-awards-explanation">
+  <img src="/img/mrpinglarge.png" />
+  <p>The Ping Award is recognition of the positive relationships established between associates and clients. When the impact is significant and the client is willing to take the time to provide great feedback about the work an associate performed to resolve an issue, recognition is due. Cerner Connect associates who are recognized for their excellent client service via survey or email are eligible for this award.</p>
+
+  <p><span style="font-weight:bold;">Frequency:</span> Submit daily; winners selected monthly</p>
+
+  <p>
+    <span style="font-weight:bold;">Criteria/Who can nominate?</span>
+    <ul>
+      <li>Associate must be specifically called out by name</li>
+      <li>Associates must be recognized for their excellent customer service</li>
+      <li>The associate can be recognized via survey or email to management</li>
+    </ul>
+  </p>
+
+  <p><span style="font-weight:bold;">Winner selection process:</span> Connect Service Improvement team will review the monthly nominations and select winners.</p>
+
+  <p><span style="font-weight:bold;">Number of Winners:</span> 8 Cerner Connect associates per month; 6 Cerner Connect associates per year</p>
+
+  <p><span style="font-weight:bold;">Each Winner will receive:</span> $50 NOTT</p>
+</div>
+
+<div>
+  <hr/>
+  <div class="ping-awards-form-container">
+    <form action="javascript:get_ping_awards();">
+      <label for="PING_AWARDS_TEAM_ID">Select Team(s):</label>
+      <select id='PING_AWARDS_TEAM_ID' class="basic-select" name="PING_AWARDS_TEAM_ID" required multiple>
+        <%
+        if(typeof teams !== 'undefined') {
+          for(var team_var=0;team_var < teams.length;team_var++) {
+            %>
+            <option value='<%= teams[team_var][0] %>'><%= teams[team_var][1] %></option>
+            <%
+          }
+        }
+        %>
+      </select>
+      <span class="ping-date-select">
+        <label for="ping-start-date">Start Date:</label>
+        <input type="text" id="ping-start-date" name="ping_start_date" required />
+      </span>
+      <span class="ping-date-select">
+        <label for="ping-end-date">End Date:</label>
+        <input type="text" id="ping-end-date" name="ping_end_date" required />
+      </span>
+      <span>
+        <input type="submit" class="refresh-button" value="Load Team" />
+      </span>
+    </form>
+  </div>
+</div>
+<div id="ping-awards-body"></div>

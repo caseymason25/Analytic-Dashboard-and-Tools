@@ -1,0 +1,133 @@
+<p class='ping-header'>Associate Surveys for Ping Review</p>
+
+<% //if there are no pings, skip the form and table
+if(pings.length > 0) { %>
+
+  <form action="javascript:void(0);" class='ping-awards-table-form'>
+    <table class="ping-awards-table standard-table styled-checkboxes" id="ping-awards-table">
+      <thead>
+        <tr>
+          <th title="The associate that Owns the Ticket" colspan="2">Ticket Owner</th>
+          <th title="The Most Recent Engineer that is Tagged on the Ticket" colspan="2">Tag Owner</th>
+          <th title="Any Other Engineers Tagged on the Ticket" rowspan="2" class="ping-awards-tag-other">Other Tag</th>
+          <th title="The Comment the Client Left on the ping" rowspan="2">Comment</th>
+          <th title="The Client Contact's Name" rowspan="2">Contact Name</th>
+          <th title="The Team's Queue that the Ticket is associated to" rowspan="2">Team</th>
+          <th title="The Date the ping was Submitted" rowspan="2">Survey Submitted</th>
+          <th title="The Incident or SR Number" rowspan="2">Ticket</th>
+          <th title="No Ping Award needed" rowspan="2">Exclude</th>
+          <th title="No Ping Award needed" class="ping-awards-excluded-col" rowspan="2">Excluded</th>
+
+        </tr>
+        <tr>
+          <th title="The associate Satisfaction Level the Client Reported on this ping">Associate</th>
+          <th title="Submit a PING award for the associate on this ticket" class='ping-ping-column'>Ping</th>
+          <th title="The associate Satisfaction Level the Client Reported on this ping">Associate</th>
+          <th title="Submit a PING award for the associate on this ticket" class='ping-tag-ping-column'>Ping</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% var ping_data = "Ticket_Owner%2CTag_Owner%2COther_Tag_Owner%2CTeam%2Cping_Submitted%2CClient%2CTicket%2CContact_Name%2Cassociate_Sat%2COverall_Sat%2CComment%0A";
+        for(var sur_var=0;sur_var < pings.length;sur_var++) { %>
+          <tr class="ping-awards-row <% if(pings[sur_var].EXCLUDED === 1) { %>ping-award-excluded<% } %>">
+            <td class="ping-awards-owner"><%= pings[sur_var].SR_OWNER %></td>
+            <td class="ping-awards-ping ping-ping-column">
+
+                <input type='checkbox' id="submit_ping_<%= pings[sur_var].ID %>" name="submit_ping_<%= pings[sur_var].ID %>" class="ping-checkbox <% if(pings[sur_var].PING_IND === 1) { %>disabled<% } %>" <% if(pings[sur_var].PING_IND === 1) { %>checked<% } %> />
+                <label for="submit_ping_<%= pings[sur_var].ID %>" <% if(pings[sur_var].PING_IND === 1) { %>title="Ping Previously Submitted"<% } %>></label>
+
+            </td>
+            <td class="ping-awards-tag"><%= pings[sur_var].TAG_OWNER %></td>
+            <td class="ping-awards-tag-ping ping-ping-column">
+              <% if(pings[sur_var].TAG_OWNER.length > 0 ) { %>
+                <input type='checkbox' id="submit_tag_ping_<%= pings[sur_var].ID %>" name="submit_tag_ping_<%= pings[sur_var].ID %>" class="ping-checkbox <% if(pings[sur_var].PING_TAG_IND === 1) { %>disabled<% } %>" <% if(pings[sur_var].PING_TAG_IND === 1) { %>checked<% } %>/>
+                <label for="submit_tag_ping_<%= pings[sur_var].ID %>" <% if(pings[sur_var].PING_TAG_IND === 1) { %>title="Ping Previously Submitted"<% } %>></label>
+                <%
+              } else {
+                %>
+                <input type='checkbox' id="submit_tag_ping_<%= pings[sur_var].ID %>" name="submit_tag_ping_<%= pings[sur_var].ID %>" class="ping-checkbox" <% if(pings[sur_var].PING_TAG_IND === 1) { %>checked<% } %>/>
+                <label for="submit_tag_ping_<%= pings[sur_var].ID %>" <% if(pings[sur_var].PING_TAG_IND === 1) { %>title="Ping Previously Submitted"<% } %>></label>
+                <%
+              }
+              %>
+            </td>
+            <td class="ping-awards-tag-other"><%= pings[sur_var].TAG_OWNER_OTHER %></td>
+            <td class="ping-awards-comment"><%= pings[sur_var].COMMENT || '' %></td>
+            <td class="ping-awards-contact"><%= pings[sur_var].CONTACT_NAME || '' %></td>
+            <td class="ping-awards-team"><%= pings[sur_var].TEAM %></td>
+            <td class="ping-awards-submitted"><%= pings[sur_var].SUBMITTED_DTTM %></td>
+            <td class="ping-awards-sr">
+              <% if(pings[sur_var].SR.indexOf("INC") >= 0) { %>
+                <a href="https://remedy.cerner.com/arsys/forms/remedyappkc/SHR%3ALandingConsole/Default+Administrator+View/?mode=search&F304255500=HPD%3AHelp+Desk&F1000000076=FormOpenNoAppList&F303647600=SearchTicketWithQual&F304255610=%271000000161%27%3D%22<%= pings[sur_var].SR %>%22" target="_blank"><%= pings[sur_var].SR %></a>
+                <%
+              } else {
+                %>
+                <%= pings[sur_var].SR %>
+                <%
+              }
+              %>
+            </td>
+            <td class="ping-awards-exclude">
+              <% if(pings[sur_var].EXCLUDED === 0) { %>
+                <input type="button" class="refresh-button" value="Exclude" onclick="ping_exclude_row(<%= pings[sur_var].ID %>,1,this)" />
+                <%
+              } else {
+                %>
+                <input type="button" class="refresh-button" value="Excluded" onclick="ping_exclude_row(<%= pings[sur_var].ID %>,0,this)" />
+                <%
+              }
+              %>
+            </td>
+            <td class="ping-awards-excluded-col">
+              <% if(pings[sur_var].EXCLUDED === 0) { %>
+                0
+                <%
+              } else {
+                %>
+                1
+                <%
+              }
+              %>
+            </td>
+
+            <td class="ping-hidden-column">
+              <input type="hidden" class="ping-awards-hidden" id="hidden_<%= pings[sur_var].ID %>" name="hidden_<%= pings[sur_var].ID %>"
+              pingID="<%= pings[sur_var].ID %>"
+              pingTicket="<%= pings[sur_var].SR %>"
+              pingSatisfaction="<%= pings[sur_var].SATISFACTION_LEVEL %>"
+              pingOwner="<%= pings[sur_var].SR_OWNER %>"
+              pingAssociateEmail="<%= pings[sur_var].SR_OWNER_EMAIL %>"
+              pingTag="<%= pings[sur_var].TAG_OWNER %>"
+              pingTeam="<%= pings[sur_var].TEAM %>"
+              pingClient="<%= pings[sur_var].CLIENT %>"
+              pingContact="<%= pings[sur_var].CONTACT_NAME %>"
+              pingComment="<%= pings[sur_var].COMMENT || '' %>"
+              pingTeamId="<%= pings[sur_var].TEAM_ID %>"
+              pingTagAssociateId="<%= pings[sur_var].TAG_ASSOCIATE_ID %>"
+              pingTagAssociateEmail="<%= pings[sur_var].TAG_OWNER_EMAIL %>"
+              pingSRAssociateId="<%= pings[sur_var].SR_ASSOCIATE_ID %>" />
+            </td>
+          </tr>
+          <%
+          var eclosed = encodeURI(pings[sur_var].SUBMITTED_DTTM);
+          ping_data += '"' + encodeURI(pings[sur_var].SR_OWNER) + '"' +"%2C"+ '"' + encodeURI(pings[sur_var].TAG_OWNER) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].TAG_OWNER_OTHER) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].TEAM) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].SUBMITTED_DTTM) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].CLIENT) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].SR) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].CONTACT_NAME) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].SATISFACTION_LEVEL) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].SATISFACTION_OVERALL) + '"' + "%2C" + '"' + encodeURI(pings[sur_var].COMMENT) + '"' + "%0A";
+        }
+        %>
+      </tbody>
+    </table>
+    <div class="ping-awards-buttons">
+      <input type="submit" class="refresh-button" value="Submit Pings" onclick="ping_process_feedback_submission(0)" />
+    </div>
+
+  </form>
+  <p><a id='ping-export-all' download='awards_ping_data.csv' href='data:application/csv;charset=utf-8,<%=ping_data%>'>Export All</a></p>
+  <% } else { %>
+    <p class="ping-awards-message">There are no pings for the specified team during this date range.</p>
+    <% } %>
+
+    <div id='ping-email-dialog' class="hidden">
+      <div class='modal-body' role='dialog' aria-labelledby='selectTeam' aria-hidden='false'>
+        <div class="ping-tickets">
+        </div>
+      </div>
+    </div>

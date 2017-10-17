@@ -1,0 +1,49 @@
+{
+  "name": "ConnectDashboards",
+  "version": "4.0.3",
+  _redacted_
+  "contributors": [
+    {
+      "name": "Casey Mason",
+      "email": "casey.mason@cerner.com"
+    }
+  ],
+  "dependencies": {
+    "activedirectory": "0.7.2",
+    "async": "2.1.2",
+    "body-parser": "1.15.2",
+    _redacted_
+    "colors": "1.1.2",
+    "compression": "^1.7.0",
+    "connect-redis": "3.1.0",
+    "cookie-parser": "1.4.3",
+    "ejs": "1.0.0",
+    "email-validator": "1.0.7",
+    "express": "4.4.4",
+    "express-session": "1.14.0",
+    "humanname": "0.2.2",
+    "ldapjs": "0.7.1",
+    "moment": "2.14.1",
+    "moment-business-days": "0.0.10",
+    "moment-timezone": "0.5.7",
+    "mssql": "4.0.1",
+    "mysql": "2.1.1",
+    "node-schedule": "1.0.0",
+    "nodemailer": "2.5.0",
+    "nodemailer-smtp-transport": "2.6.0",
+    "object-sizeof": "^1.2.0",
+    "passport": "0.3.2",
+    _redacted_
+    "redis": "2.6.1",
+    "redis-sentinel": "0.3.3",
+    "serve-favicon": "2.4.1",
+    _redacted_
+    "xlsx-style": "0.8.13",
+    "xml2js": "0.4.17",
+    "xmlbuilder": "2.2.1"
+  },
+  "engines": {
+    "node": ">=0.10.24"
+  },
+  "devDependencies": {}
+}

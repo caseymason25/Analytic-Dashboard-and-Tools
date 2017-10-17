@@ -1,0 +1,123 @@
+<span id='server-status'></span>
+<div class="header-row dash-h15 dash-w10">
+  <% include big_text_inc.ejs %>
+  <% include inc_una.ejs %>
+</div>
+<div class="finish_line clickable dash-h05 dash-w10" onmouseover="javascript:show_closed_text();" onmouseout="javascript:hide_closed_text();" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"CLOBOD");'>
+  <img src="../img/runner.gif" id="img_runner_clobod" class="img_runner" alt="running man" />
+  <%
+  var closed_desc = " ";
+  var target_cls = parseInt(item.target_cls);
+  var target_open = parseInt(item.target_open);
+  if(target_open !== 0 && target_cls === 1) {
+    // we're using target open and goal isn't met
+    closed_desc = "Get the backlog to "+target_open+" or fewer to meet the goal";
+  } else if(target_cls === 2) {
+    //we're using ADC to track daily progress - closed today / 20Bus Day avg
+    closed_desc = "Close your daily average ("+item.Metrics.CLOAVG.value_string+") to meet the goal";
+  } else if(target_cls === 3) {
+    //we're using closed today to hit a specific number - aka - we need to close 25 today
+    closed_desc = "Close "+target_open+" to meet the goal";
+  } else {
+    //we're using 28 inc / 28 day closed to ensure closes are meeting incoming (over the last 28 days)
+    closed_desc = "Get the 28 day closes ("+item.Metrics.CLO28D.value_string+") to meet or exceed your 28 day incoming ("+item.Metrics.INC28D.value_string+") to meet the goal";
+  }
+  %>
+  <span class='gauge-text'>Closed Today</span><span id='CLOBOD_runner' class='gauge-text tat_space'><%= item.Metrics.CLOBOD.value_string || "-" %></span>
+  <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_clobod' class="img_finish" alt="finish flag" />
+  <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_clobod' class="img_runner_finish" alt="running man finished" />
+  <span id='CLOBOD_TEXT' class='runner-hover-text'><%= closed_desc %></span>
+</div>
+<div class='finish_line dash-h05 dash-w10' onmouseover="javascript:show_fcr_text();" onmouseout="javascript:hide_fcr_text();" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"FCRFRT");'>
+  <img src="../img/runner.gif" id='img_runner_fcr' class="img_runner" alt="running man" />
+  <span class='gauge-text'>FCR</span><span id='FCRP_runner' class='gauge-text tat_space'>
+    <%
+    if(item.service !=="") {
+      %>
+      <%= item.Metrics.FCRP.value_string %>
+      <%
+    } else {
+      %>
+      <%= item.Metrics.FCRPFRT.value_string %>
+      <%
+    }
+    %>
+    %</span>
+    <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_fcr' class="img_finish" alt="finish flag" />
+    <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_fcr' class="img_runner_finish" alt="running man finished" />
+    <span id='fcr-text' class='runner-hover-text'>Get <%= item.Metrics.TARGET_FCR.value_string %>% to reach the goal</span>
+  </div>
+  <div id="24H-runner" class='finish_line dash-h05 dash-w10 clickable' onmouseover="javascript:show_24hr_text();" onmouseout="javascript:hide_24hr_text();" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"B24H","24 Hour TAT Tickets","24H");'>
+    <img src="../img/runner.gif" id='img_runner_24h' class="img_runner" alt="running man" />
+    <span class='gauge-text'>24 Hr </span><span id='tat24h' class='gauge-text tat_space'>
+      <%
+      if(item.service !=="") {
+        %>
+        <%= item.Metrics.TAT24HR.value_string %>
+        <%
+      } else {
+        %>
+        <%= item.Metrics.TAT24HRFRT.value_string %>
+        <%
+      }
+      %>
+      %</span>
+      <span class='runner-notification'><% if(item.tat_notification === 1) { var iconDisp = ""; if(item.Metrics.B24H.notification === 0) { iconDisp = "style=display:none;" } %><i class="fa fa-exclamation-circle" aria-hidden="true" <%= iconDisp %>></i> <% } %></span>
+      <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_24h' class="img_finish" alt="finish flag" />
+      <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_24h' class="img_runner_finish" alt="running man finished" />
+      <span id='hr24-text' class='runner-hover-text'>Get <%= item.Metrics.TARGET_24HR.value_string %>% to reach the goal</span>
+    </div>
+    <div class='finish_line dash-h05 dash-w10' onmouseover="javascript:show_close_percent_text();" onmouseout="javascript:hide_close_percent_text();">
+      <img src="../img/runner.gif" id='img_runner_opp'  class="img_runner" alt="running man" />
+      <span class='gauge-text'>Close %</span><span id='opp' class='gauge-text tat_space'><%= item.Metrics.OPPCLOSE.value_string %>%</span>
+      <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_opp' class="img_finish" alt="finish flag" />
+      <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_opp' class="img_runner_finish" alt="running man finished" />
+      <span id='close-percent-text' class='runner-hover-text'>Get <%= item.Metrics.TARGET_OPP.value_string %>% to reach the goal</span>
+    </div>
+    <div class="graph-row dash-h35 dash-w10">
+      <div style="position:relative;" class="dash-w10 dash-h10">
+        <div id="total-sparkline" class="sparkline dash-w10 dash-h10"></div>
+      </div>
+    </div>
+    <div class="bottom-row dash-w10 dash-h25">
+      <div class="dash-w25 dash-h10 bottom-stat-box-left">
+        <div class="dash-w10 dash-h5">
+          <span class="top-nbr-label">Net Change Open</span>
+        </div>
+        <div class="dash-w10 dash-h5 clickable" onclick='get_client_sat("<%= item.mnemonic %>",null,null,null,"CLIENT_SAT_POS_HIGH", "Client Sat High <%=item.Metrics.CLIENT_SAT_HIGH.value_string %>%", null, <%= item.Metrics.CLIENT_SAT_POS.value_string %>, <%= item.Metrics.CLIENT_SAT_POS_HIGH.value_string %>, <%= item.Metrics.CLIENT_SAT_TOT.value_string %>);'>
+          <span class="top-nbr-label">Client Satisfaction</span>
+        </div>
+      </div>
+      <div class="dash-w25 dash-h10 bottom-stat-box-right">
+        <div class="dash-w10 dash-h5">
+          <span id="net" class="bottom-nbr-label">
+            <%
+            if(typeof item.Metrics.NET_CHNG.value_string !== 'undefined') {
+              var net_html = " ";
+              if(item.Metrics.NET_CHNG.value > 0) {
+                net_html = "+";
+              }
+              net_html += item.Metrics.NET_CHNG.value_string;
+              %>
+              <%- net_html %>
+              <% } else { %>
+                -
+                <% } %>
+              </span>
+            </div>
+            <div class="dash-w10 dash-h5 clickable" onclick='get_client_sat("<%= item.mnemonic %>",null,null,null,"CLIENT_SAT_POS_HIGH", "Client Sat High <%=item.Metrics.CLIENT_SAT_HIGH.value_string %>%", null, <%= item.Metrics.CLIENT_SAT_POS.value_string %>, <%= item.Metrics.CLIENT_SAT_POS_HIGH.value_string %>, <%= item.Metrics.CLIENT_SAT_TOT.value_string %>);'>
+              <% include client_sat_inc.ejs %>
+            </div>
+          </div>
+          <% include norm_xday.ejs %>
+        </div>
+        <div class='ticker-text dash-h05 dash-w10'>
+          <%
+          var message = item.target_msg;
+          if(message === '' || message === null || typeof message === 'undefined') {
+            item.target_msg = " ";
+          }
+          %>
+          <marquee><span id='ticker'><%= item.target_msg %></span></marquee>
+        </div>
+        <% include choose_team_dialog_inc.ejs %>

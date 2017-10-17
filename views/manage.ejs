@@ -1,0 +1,363 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+  <title>Connect Manager Dashboard</title>
+  <link href="../css/side-nav.css" type="text/css" rel="stylesheet">
+  <link href="../css/manage.css" type="text/css" rel="stylesheet"/>
+  <link href="../css/jquery-ui.min.css" type="text/css" rel="stylesheet"/>
+  <link href="../lib/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+  <link href="../css/bootstrap.css" type="text/css" rel="stylesheet">
+  <link href="../css/bootstrap_dialog.css" type="text/css" rel="stylesheet">
+  <link href="../css/font-awesome.min.css" type="text/css" rel="stylesheet">
+
+</head>
+<body>
+
+  <div id="wrapper" class="toggled">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+          <a href="#menu-toggle" id="menu-toggle" title="Expand/Collapse Navigation"><span class="glyphicon glyphicon-menu-right"></span><span class="glyphicon glyphicon-menu-right"></span></a>
+        </li>
+        <li>
+          <a class="tab-link active" id="tab-link-home" title="Home"><i class="fa fa-home sidebar-nav-icon" aria-hidden="true"></i>Home</a>
+        </li>
+
+        <li class="sidebar-group">
+          <a class="sidebar-header" title="Dashboard Tabs"><i class="fa fa-tachometer sidebar-nav-icon" aria-hidden="true"></i>Dashboards<span class="glyphicon glyphicon-menu-down"></span></a>
+          <ul>
+            <li><a href="/" class="tab-link sub-tab" id="tab-link-dash-teamview" title="Team View Dashboard" target="_blank"><i class="sidebar-nav-icon">T</i><span>Team View Dashboard <i class="fa fa-external-link" aria-hidden="true"></i></span></a></li>
+            <li><a href="/allview" class="tab-link sub-tab" id="tab-link-dash-allview" title="Allview Dashboard" target="_blank"><i class="sidebar-nav-icon">A</i><span>Allview Dashboard <i class="fa fa-external-link" aria-hidden="true"></i></span></a></li>
+            <li><a href="/sspr" class="tab-link sub-tab" id="tab-link-dash-sspr" title="SSPR Dashboard" target="_blank"><i class="sidebar-nav-icon">S</i><span>SSPR Dashboard <i class="fa fa-external-link" aria-hidden="true"></i></span></a></li>
+          </ul>
+        </li>
+        <% if(logged_in > 0) { %>
+          <%
+          if(perm.DASHCONFIG & role || perm.QUEUES & role || perm.SSPR & role) {
+            %>
+            <li class="sidebar-group">
+              <a class="sidebar-header" title="Dashboard Configuration Tabs"><i class="fa fa-wrench sidebar-nav-icon" aria-hidden="true"></i>Dashboard Config<span class="glyphicon glyphicon-menu-down"></span></a>
+              <ul>
+                <%
+                if(perm.DASHCONFIG & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-views" title="Views"><i class="sidebar-nav-icon">V</i><span>Views</span></a></li>
+                  <%
+                }
+                if(perm.QUEUES & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-groups" title="Groups"><i class="sidebar-nav-icon">G</i><span>Groups</span></a></li>
+                  <li><a class="tab-link sub-tab" id="tab-link-teams" title="Teams"><i class="sidebar-nav-icon">T</i><span>Teams</span></a></li>
+                  <li><a class="tab-link sub-tab" id="tab-link-queues" title="Queues"><i class="sidebar-nav-icon">Q</i><span>Queues</span></a></li>
+                  <%
+                }
+                if(perm.SSPR & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-sspr" title="SSPR"><i class="sidebar-nav-icon" aria-hidden="true">S</i><span>SSPR Config</span></a></li>
+                  <%
+                }
+                %>
+              </ul>
+            </li>
+            <%
+          }
+          %>
+          <%
+          if(perm.SURVEY & role || perm.SURRESP & role || perm.SURASSOC & role || perm.SURRESPADMIN & role) {
+            %>
+            <li class="sidebar-group">
+              <a class="sidebar-header" title="Survey Tool Tabs"><i class="fa fa-star sidebar-nav-icon" aria-hidden="true"></i>Survey Tools<span class="glyphicon glyphicon-menu-down"></span></a>
+              <ul>
+                <%
+                if(perm.SURVEY & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-auto-surveys" title="Auto Surveys"><i class="sidebar-nav-icon">A</i><span>Auto Surveys</span></a></li>
+                  <%
+                }
+                if(perm.SURRESP & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-client-feedback" title="Client Feedback"><i class="sidebar-nav-icon">C</i><span>Client Feedback</span></a></li>
+                  <%
+                }
+                if(perm.SURRESPADMIN & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-client-feedback-admin" title="Client Feedback Admin"><i class="sidebar-nav-icon">C</i><span>Client Feedback Admin</span></a></li>
+                  <%
+                }
+                if(perm.SURASSOC & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-associate-surveys" title="Associate Surveys"><i class="sidebar-nav-icon">A</i><span>Associate Surveys</span></a></li>
+                  <%
+                }
+                %>
+              </ul>
+            </li>
+            <%
+          }
+          %>
+          <li class="sidebar-group">
+            <a class="sidebar-header" title="Ping Tabs"><img src="/img/mrping.png" class="sidebar-nav-icon" />Ping Awards<span class="glyphicon glyphicon-menu-down"></span></a>
+            <ul>
+              <li><a class="tab-link sub-tab" id="tab-link-manual-ping-awards" title="Ping Award Submission"><i class="sidebar-nav-icon">P</i><span>Ping Award Submission</span></a></li>
+              <%
+              if(perm.PINGAWARDS & role) {
+                %>
+                <li><a class="tab-link sub-tab" id="tab-link-ping-awards" title="Team Ping Awards"><i class="sidebar-nav-icon">T</i><span>Team Ping Awards</span></a></li>
+                <%
+              }
+              if(perm.PINGADMIN & role) {
+                %>
+                <li><a class="tab-link sub-tab" id="tab-link-ping-awards-admin" title="Ping Awards Admin"><i class="sidebar-nav-icon">P</i><span>Ping Awards Admin</span></a></li>
+                <%
+              }
+              %>
+            </ul>
+          </li>
+          <% if(perm.USERS & role || perm.STATS & role || perm.SERVER & role) { %>
+            <li class="sidebar-group">
+              <a class="sidebar-header" title="Server Tool Tabs"><i class="fa fa-server sidebar-nav-icon" aria-hidden="true"></i>Server Tools<span class="glyphicon glyphicon-menu-down"></span></a>
+              <ul>
+                <%
+
+                if(perm.USERS & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-users" title="Users"><i class="sidebar-nav-icon">U</i><span>Users</span></a></li>
+                  <%
+                }
+                if(perm.STATS & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-stats" title="Stats"><i class="sidebar-nav-icon">S</i><span>Stats</span></a></li>
+                  <%
+                }
+                if(perm.SERVER & role) {
+                  %>
+                  <li><a class="tab-link sub-tab" id="tab-link-server-options" title="Server Options"><i class="sidebar-nav-icon">O</i><span>Server Options</span></a></li>
+                  <%
+                }
+                %>
+              </ul>
+            </li>
+            <%
+          }
+          %>
+          <%
+        }
+        %>
+        <li><a href="https://tableau.cerner.com/#/workbooks/3190/views" class="tab-link" id="tab-link-statistics" title="Statistics" target="_blank"><i class="fa fa-pie-chart sidebar-nav-icon" aria-hidden="true"></i>Statistics <i class="fa fa-external-link" aria-hidden="true"></i></a></li>
+        <li><a class="tab-link" id="tab-link-change-log" title="Changelog"><i class="fa fa-info-circle sidebar-nav-icon" aria-hidden="true"></i>Changelog</a></li>
+        <ul class="sidebar-nav-bottom">
+          <li><span>Version <%= version %></span></li>
+        </ul>
+      </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
+        <% if(logged_in > 0) { %>
+          <div id="main-header">
+            <span id='server-status'></span>
+            <div class='top-right'>
+              <span>Logged in as <%= assoc %></span>
+              <a class='redirect-button' onclick='localStorage.setItem("manage_tab","tab-link-home");localStorage.setItem("manage_wrapper","WRAPPER_HOME");' href='/logout'><span>Logout</span></a>
+            </div>
+            <div class='header-top'><h2>Connect Manager Dashboard</h2></div>
+          </div>
+          <div id="WRAPPER_HOME" class='wrappers'>
+            <% include includes/home.ejs %>
+          </div>
+          <div id="WRAPPER_VIEWS" class='wrappers disp_none'>
+            <h1 class="page-header">View Configuration</h1>
+          </div>
+          <div id="WRAPPER_GROUPS" class='wrappers disp_none'>
+            <h1 class="page-header">Group Configuration</h1>
+          </div>
+          <div id="WRAPPER_TEAMS" class='wrappers disp_none'>
+            <h1 class="page-header">Team Configuration</h1>
+          </div>
+          <div id="WRAPPER_QUEUES" class='wrappers disp_none'>
+            <h1 class="page-header">Queue Configuration</h1>
+          </div>
+          <div id="WRAPPER_USERS" class='wrappers disp_none'>
+            <h1 class="page-header">User Maintenance</h1>
+          </div>
+          <div id="WRAPPER_MANUAL_PING_AWARDS" class='wrappers disp_none'>
+            <h1 class="page-header">Ping Awards Submission</h1>
+          </div>
+          <%
+          if(perm.STATS & role) {
+            %>
+            <div id="WRAPPER_STATS" class='wrappers disp_none'>
+              <h1 class="page-header">Server Statistics</h1>
+              <% include includes/stats.ejs %>
+            </div>
+            <%
+          }
+          if(perm.SSPR & role) {
+            %>
+            <div id="WRAPPER_SSPR" class='wrappers disp_none'>
+              <h1 class="page-header">SSPR Configuration</h1>
+              <% include includes/sspr.ejs %>
+            </div>
+            <%
+          }
+          if(perm.SERVER & role) {
+            %>
+            <div id="WRAPPER_SERVER" class='wrappers disp_none'>
+              <h1 class="page-header">Server Configuration</h1>
+              <% include includes/server.ejs %>
+            </div>
+            <%
+          }
+          if(perm.SURVEY & role) {
+            %>
+            <div id="WRAPPER_SURVEY" class='wrappers disp_none'>
+              <h1 class="page-header">Automatic Survey Configuration</h1>
+            </div>
+            <%
+          }
+          if(perm.SURRESP & role) {
+            %>
+            <div id="WRAPPER_SURVEY_RESP" class='wrappers disp_none'>
+              <h1 class="page-header">Client Feedback</h1>
+            </div>
+            <%
+          }
+          if(perm.SURRESPADMIN & role) {
+            %>
+            <div id="WRAPPER_SURVEY_RESP_ADMIN" class='wrappers disp_none'>
+              <h1 class="page-header">Client Feedback Admin</h1>
+            </div>
+            <%
+          }
+          if(perm.SURASSOC & role) {
+            %>
+            <div id="WRAPPER_SURVEY_ASSOC" class='wrappers disp_none'>
+              <h1 class="page-header">Associate Survey Tool</h1>
+            </div>
+            <%
+          }
+          if(perm.PINGAWARDS & role) {
+            %>
+            <div id="WRAPPER_PING_AWARDS" class='wrappers disp_none'>
+              <h1 class="page-header">Ping Awards Submission Tool</h1>
+            </div>
+            <%
+          }
+          if(perm.PINGADMIN & role) {
+            %>
+            <div id="WRAPPER_PING_AWARDS_ADMIN" class='wrappers disp_none'>
+              <h1 class="page-header">Ping Awards Admin Panel</h1>
+            </div>
+            <%
+          }
+          %>
+          <div id="WRAPPER_CHANGE_LOG" class='wrappers disp_none'>
+            <h1 class="page-header">Changelog</h1>
+            <% include /changelog.ejs %>
+          </div>
+          <%
+        } else {
+          %>
+          <div id="WRAPPER_HOME" class='wrappers'>
+            <% include not_logged_in.ejs %>
+          </div>
+          <div id="WRAPPER_CHANGE_LOG" class='wrappers disp_none'>
+            <h1 class="page-header">Changelog</h1>
+            <% include /changelog.ejs %>
+          </div>
+          <%
+        }
+        %>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <script src="../lib/jquery-3.1.1.js" type="text/javascript"></script>
+  <script src="../lib/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../js/side-nav.js" type="text/javascript"></script>
+  <script src="../lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+  <script src="../lib/select2/4.0.3/js/select2.min.js" type="text/javascript"></script>
+  <script src="../lib/flot/jquery.flot.js" type="text/javascript"></script>
+  <script src="../lib/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
+  <script src="../lib/flot/jquery.flot.sparkline.js" type="text/javascript"></script>
+  <script src="../lib/flot/jquery.flot.time.min.js" type="text/javascript"></script>
+  <script src="../lib/flot/jquery.flot.pie.min.js" type="text/javascript"></script>
+  <script src="../lib/flot/curvedLines.js" type="text/javascript"></script>
+  <script src="../lib/moment.min.js" type="text/javascript"></script>
+  <script src="../lib/jquery.tablesorter.js"></script>
+  <script src="../lib/bootstrap_dialog.js"></script>
+  <script src="../js/main.js" type="text/javascript"></script>
+  <% if(logged_in > 0) { %>
+    <script src="../js/ping_awards_manual.js" type="text/javascript"></script>
+    <%
+    if(perm.USERS & role) {
+      %>
+      <script src="../js/user_build.js" type="text/javascript"></script>
+      <%
+    }
+    %>
+    <%
+    if(perm.DASHCONFIG & role) {
+      %>
+      <script src="../js/queue_build.js" type="text/javascript"></script>
+      <script src="../js/team_build.js" type="text/javascript"></script>
+      <script src="../js/group_build.js" type="text/javascript"></script>
+      <script src="../js/view_build.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.SSPR & role) {
+      %>
+      <script src="../js/sspr_build.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.STATS & role) {
+      %>
+      <script src="../js/stats.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.SERVER & role) {
+      %>
+      <script src="../js/server_build.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.SURVEY & role) {
+      %>
+      <script src="../js/survey.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.SURRESP & role) {
+      %>
+      <script src="../js/survey_client_response.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.SURRESPADMIN & role) {
+      %>
+      <script src="../js/survey_client_response_admin.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.SURASSOC & role) {
+      %>
+      <script src="../js/survey_assoc.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.PINGAWARDS & role) {
+      %>
+      <script src="../js/ping_awards.js" type="text/javascript"></script>
+      <%
+    }
+    if(perm.PINGADMIN & role) {
+      %>
+      <script src="../js/ping_awards_admin.js" type="text/javascript"></script>
+      <%
+    }
+  }
+  %>
+
+</body>
+</html>

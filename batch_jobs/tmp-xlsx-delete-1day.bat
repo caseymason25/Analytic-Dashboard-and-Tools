@@ -1,0 +1,1 @@
+forfiles -p "..\public\tmp" -s -m *.xlsx* /D -1 /C "cmd /c del @path"

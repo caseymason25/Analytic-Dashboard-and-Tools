@@ -1,0 +1,43 @@
+<p class='ping-header'>Ping Award Winners</p>
+
+<% //if there are no pings, skip the form and table
+if(pings.length > 0) { %>
+
+  <form action="javascript:void(0);" class='ping-awards-admin-table-form'>
+    <table class="ping-awards-admin-table standard-table" id="ping-awards-admin-table">
+      <thead>
+        <tr>
+          <th title="The parent group of the team">Group</th>
+          <th title="The team the associate is a part of" >Team</th>
+          <th title="The recipient of the Ping">Associate</th>
+          <th title="The comment on the Ping">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+        var ping_data = "Group%2CTeam%2CRecipient%2CDescription%0A";
+        for(var i=0;i < pings.length;i++) {
+          %>
+          <tr class="ping-awards-admin-row">
+            <td class="ping-awards-admin-group"><%= pings[i].GROUP %></td>
+            <td class="ping-awards-admin-team"><%= pings[i].TEAM %></td>
+            <td class="ping-awards-admin-recipient" pingAssociateID="<%= pings[i].RECIPIENT_ASSOCIATE_ID %>"><%= pings[i].RECIPIENT %></td>
+            <td class="ping-awards-admin-comment"><%= pings[i].COMMENT %></td>
+          </tr>
+          <%
+          ping_data += '"' + encodeURI(pings[i].GROUP) + '"' +"%2C"+ '"' + encodeURI(pings[i].TEAM) + '"' + "%2C" + '"' + encodeURI(pings[i].RECIPIENT) + '"' + "%2C" + '"' + encodeURI(pings[i].COMMENT) + '"' + "%0A";
+        }
+        %>
+      </tbody>
+    </table>
+  </form>
+  <p><a id='ping-export-all' download='ping_awards_table_export.csv' href='data:application/csv;charset=utf-8,<%=ping_data%>'>Export All</a></p>
+  <p><a class="redirect-button" id='ping-generate-excel' title="Generate Excel Book" download='ping_awards_data.xlsx' href='<%=excel_file%>'>Generate Excel Book</a>
+  <a class="redirect-button" id='ping-generate-nott' title="Generate NOTT Winners" onclick="randomWinners()">Generate NOTT Winners</a></p>
+  <%
+} else {
+  %>
+  <p class="ping-awards-admin-message">There are no pings for the specified group during this date range.</p>
+  <%
+}
+%>

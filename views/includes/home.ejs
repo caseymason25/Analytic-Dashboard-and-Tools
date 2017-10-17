@@ -1,0 +1,265 @@
+<% if(logged_in > 0) { %>
+  <div class="home">
+
+    <%
+    if(perm.DASHCONFIG & role || perm.QUEUES & role || perm.SSPR & role) {
+      %>
+      <div class="home-section-header">
+        <h2><i class="fa fa-wrench" aria-hidden="true"></i> Dashboard Configuration</h2>
+      </div>
+      <%
+      if(perm.DASHCONFIG & role) {
+        %>
+        <a class="home-link" id="home-link-views">
+          <div class="home-link-wrapper" title="Views">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">V</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Views</h4>
+              <span class="home-link-description">Configure Views for use in the AllView Dashboards.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      %>
+      <%
+      if(perm.QUEUES & role) {
+        %>
+        <a class="home-link" id="home-link-groups">
+          <div class="home-link-wrapper" title="Groups">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">G</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Groups</h4>
+              <span class="home-link-description">Configure Views for use in the AllView Dashboards.</span>
+            </div>
+          </div>
+        </a>
+        <a class="home-link" id="home-link-teams">
+          <div class="home-link-wrapper" title="Teams">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">T</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Teams</h4>
+              <span class="home-link-description">Configure Teams for use in the Team View Dashboards.</span>
+            </div>
+          </div>
+        </a>
+        <a class="home-link" id="home-link-queues">
+          <div class="home-link-wrapper" title="Queues">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">Q</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Queues</h4>
+              <span class="home-link-description">Configure Queues that can be assoicated to teams.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      %>
+      <%
+      if(perm.SSPR & role) {
+        %>
+        <a class="home-link" id="home-link-sspr">
+          <div class="home-link-wrapper" title="SSPR">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">S</span>
+            </div>
+            <div class="home-link-text">
+              <h4>SSPR</h4>
+              <span class="home-link-description">Configure and refresh the self service password reset dashboard.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      %>
+      <div class="home-section"></div>
+      <%
+    }
+    %>
+
+    <% if(perm.SURVEY & role || perm.SURRESP & role || perm.SURASSOC & role) { %>
+      <div class="home-section-header">
+        <h2><i class="fa fa-star" aria-hidden="true"></i> Survey Tools</h2>
+      </div>
+      <%
+      if(perm.SURVEY & role) {
+        %>
+        <a class="home-link" id="home-link-auto-surveys">
+          <div class="home-link-wrapper" title="Auto Surveys">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">A</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Auto Surveys</h4>
+              <span class="home-link-description">Configure the automatic surveys that are sent out for internal navigator tickets.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      if(perm.SURRESP & role) {
+        %>
+        <a class="home-link" id="home-link-client-feedback">
+          <div class="home-link-wrapper" title="Client Feedback">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">C</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Client Feedback</h4>
+              <span class="home-link-description">Review the list of client emails that will be sent out to increase survey responses.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      if(perm.SURRESPADMIN & role) {
+        %>
+        <a class="home-link" id="home-link-client-feedback-admin">
+          <div class="home-link-wrapper" title="Client Feedback Admin">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">C</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Client Feedback Admin</h4>
+              <span class="home-link-description">Review and send the list of client emails that will be sent out to increase survey responses.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      if(perm.SURASSOC & role) {
+        %>
+        <a class="home-link" id="home-link-associate-surveys">
+          <div class="home-link-wrapper" title="Associate Surveys">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">A</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Associate Surveys</h4>
+              <span class="home-link-description">Review positive surveys left by clients and email the results to your team.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+    } // end survey group perm check
+    %>
+    <div class="home-section"></div>
+
+    <div class="home-section-header">
+      <h2><img src="/img/mrpingdark.png" style="height: 30px;"/> Pings Awards</h2>
+    </div>
+    <a class="home-link" id="home-link-manual-ping-awards">
+      <div class="home-link-wrapper" title="Manual Ping Submission">
+        <div class="home-link-icon-wrapper">
+          <span class="fa home-link-icon">P</span>
+        </div>
+        <div class="home-link-text">
+          <h4>Ping Award Submission</h4>
+          <span class="home-link-description">Submit a Ping Award.</span>
+        </div>
+      </div>
+    </a>
+    <%
+    if(perm.PINGAWARDS & role) {
+      %>
+      <a class="home-link" id="home-link-ping-awards">
+        <div class="home-link-wrapper" title="Ping Awards">
+          <div class="home-link-icon-wrapper">
+            <span class="fa home-link-icon">T</span>
+          </div>
+          <div class="home-link-text">
+            <h4>Team Ping Awards</h4>
+            <span class="home-link-description">Review positive survey comments and submit associate ping awards in bulk.</span>
+          </div>
+        </div>
+      </a>
+      <%
+    }
+    if(perm.PINGADMIN & role) {
+      %>
+      <a class="home-link" id="home-link-ping-awards-admin">
+        <div class="home-link-wrapper" title="Ping Awards Admin">
+          <div class="home-link-icon-wrapper">
+            <span class="fa home-link-icon">P</span>
+          </div>
+          <div class="home-link-text">
+            <h4>Ping Awards Admin</h4>
+            <span class="home-link-description">Review ping awards received and export the results to your local PC.</span>
+          </div>
+        </div>
+      </a>
+      <%
+    }
+    %>
+
+
+    <div class="home-section"></div>
+    <% if(perm.USERS & role || perm.STATS & role || perm.SERVER & role) { %>
+      <div class="home-section-header">
+        <h2><i class="fa fa-server" aria-hidden="true"></i> Server Tools</h2>
+      </div>
+      <%
+      if(perm.USERS & role) {
+        %>
+        <a class="home-link" id="home-link-users">
+          <div class="home-link-wrapper" title="Users">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">U</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Users</h4>
+              <span class="home-link-description">Configure the users and grant them permissions for the manager dashboard.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      if(perm.STATS & role) {
+        %>
+        <a class="home-link" id="home-link-stats">
+          <div class="home-link-wrapper" title="Stats">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">S</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Stats</h4>
+              <span class="home-link-description">Review various stats on the server.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      if(perm.SERVER & role) {
+        %>
+        <a class="home-link" id="home-link-server-options">
+          <div class="home-link-wrapper" title="Server Options">
+            <div class="home-link-icon-wrapper">
+              <span class="fa home-link-icon">S</span>
+            </div>
+            <div class="home-link-text">
+              <h4>Server Options</h4>
+              <span class="home-link-description">Configure settigs on the server.</span>
+            </div>
+          </div>
+        </a>
+        <%
+      }
+      %>
+      <div class="home-section"></div>
+      <%
+    }
+    %>
+
+  </div>
+  <%
+} //end logged_in check
+%>

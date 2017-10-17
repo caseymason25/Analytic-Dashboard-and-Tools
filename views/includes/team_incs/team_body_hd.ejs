@@ -1,0 +1,669 @@
+<span id='server-status'></span>
+<div class="header-row dash-h15 dash-w10">
+  <div class="header-team-name dash-w3 dash-h10">
+    <a onclick='javascript:change_team_dialog();' data-toggle="modal" class="configBTN">
+      <i class="fa fa-gears"> </i>
+    </a>
+    <h2 class="pagetitle bigtext" id="bigtext-id0">
+      <% if(typeof item.display !== 'undefined' && item.display !== null) { %>
+        <%= item.display %>
+        <% } else { %>
+          -
+          <% } %>
+        </h2>
+      </div>
+      <div class="header-team-name dash-w7 dash-h10">
+        <div class="dash-w25 dash-h5 clickable" onclick='get_client_sat("<%= item.mnemonic %>",null,null,null,"CLIENT_SAT_POS_HIGH", "Client Sat High <%=item.Metrics.CLIENT_SAT_HIGH.value_string %>%", null, <%= item.Metrics.CLIENT_SAT_POS.value_string %>, <%= item.Metrics.CLIENT_SAT_POS_HIGH.value_string %>, <%= item.Metrics.CLIENT_SAT_TOT.value_string %>);'>
+          <span class="top-nbr-label">Client Sat</span>
+        </div>
+        <div class="dash-w25 dash-h5">
+          <span class="top-nbr-label">Calls</span>
+        </div>
+        <div class="dash-w25 dash-h5 clickable"  onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"CUR_INC");'>
+          <span class="top-nbr-label">Tickets</span>
+        </div>
+        <div class="dash-w25 dash-h5 clickable"  onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"CUR_UNASSIGNED");'>
+          <span class="top-nbr-label">Unassigned</span>
+        </div>
+
+
+        <div class="dash-w25 dash-h5 clickable" onclick='get_client_sat("<%= item.mnemonic %>",null,null,null,"CLIENT_SAT_POS_HIGH", "Client Sat High <%=item.Metrics.CLIENT_SAT_HIGH.value_string %>%", null, <%= item.Metrics.CLIENT_SAT_POS.value_string %>, <%= item.Metrics.CLIENT_SAT_POS_HIGH.value_string %>, <%= item.Metrics.CLIENT_SAT_TOT.value_string %>);'>
+          <span id="inc" class="top-nbr-label">
+            <%
+            var sat_data = "";
+            if(typeof item.client !== 'undefined') {
+              if(item.client === null || item.client === "")  {
+                if(item.Metrics.CLIENT_SAT_TOT.value > 0) {
+                  if(item.Metrics.CLIENT_SAT_HIGH.value_string === "100.00") {
+                    sat_data = "100%";
+                  } else {
+                    sat_data = item.Metrics.CLIENT_SAT_HIGH.value_string + "%";
+                  }
+                } else {
+                  sat_data = "-";
+                }
+              } else {
+                sat_data = "-";
+              }
+            } else {
+              if(item.Metrics.CLIENT_SAT_TOT.value > 0) {
+                if(item.Metrics.CLIENT_SAT_HIGH.value_string === "100.00") {
+                  sat_data = "100%";
+                } else {
+                  sat_data = item.Metrics.CLIENT_SAT_HIGH.value_string + "%";
+                }
+              } else {
+                sat_data = "-";
+              }
+            }
+            %>
+            <%= sat_data %>
+          </span>
+        </div>
+        <div class="dash-w25 dash-h5">
+          <span id="inc" class="top-nbr-label"><%= item.Metrics.CALL_TOT.value_string || "-" %></span>
+        </div>
+        <div class="dash-w25 dash-h5 clickable" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"CUR_INC");'>
+          <span id="inc" class="top-nbr-label"><%= item.Metrics.CUR_INC.value_string || "-" %></span>
+        </div>
+        <div class="dash-w25 dash-h5 clickable" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"CUR_UNASSIGNED");'>
+          <span id="una" class="top-nbr-label"><%= item.Metrics.CUR_UNASSIGNED.value_string || "-" %></span>
+        </div>
+      </div>
+    </div>
+    <div class="finish_line dash-h05 dash-w10" onmouseover="javascript:show_asa_text();" onmouseout="javascript:hide_asa_text();">
+      <img src="../img/runner.gif" id="img_runner_asa" class="img_runner" alt="running man" />
+      <%
+      var asa_desc = "Get the Speed to Answer to "+item.Metrics.TARGET_ASA.value_string+" secs or under to meet the goal";
+      %>
+      <span class='gauge-text'>ASA</span><span id='asa_runner' class='gauge-text tat_space'><%= item.Metrics.CALL_ASA.value_string || "-" %> secs</span>
+      <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_asa' class="img_finish" alt="finish flag" />
+      <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_asa' class="img_runner_finish" alt="running man finished"  />
+      <span id='CLOBOD_TEXT' class='runner-hover-text'><%= asa_desc %></span>
+    </div>
+    <%
+    var client_1 = {};
+    var client_2 = {};
+    var client_3 = {};
+    var clients_found = 0;
+    var widthStyle = "";
+    var trendStyle = "";
+    for(var group_key in item.Groups) {
+      for(var team_key in item.Groups[group_key].Teams) {
+        for(var queue_key in item.Groups[group_key].Teams[team_key].Queues) {
+          if(rotate_clients.indexOf(queue_key) >= 0) {
+            switch(clients_found) {
+              case 0:
+              client_1.cm = item.Groups[group_key].Teams[team_key].Queues[queue_key].client || '';
+              client_1.day = item.Groups[group_key].Teams[team_key].Queues[queue_key].trend_day;
+              client_1.week = item.Groups[group_key].Teams[team_key].Queues[queue_key].trend_week;
+              client_1.fcrp = item.Groups[group_key].Teams[team_key].Queues[queue_key].Metrics.FCRP.value_string;
+              clients_found++;
+              break;
+              case 1:
+              client_2.cm = item.Groups[group_key].Teams[team_key].Queues[queue_key].client || '';
+              client_2.day = item.Groups[group_key].Teams[team_key].Queues[queue_key].trend_day;
+              client_2.week = item.Groups[group_key].Teams[team_key].Queues[queue_key].trend_week;
+              client_2.fcrp = item.Groups[group_key].Teams[team_key].Queues[queue_key].Metrics.FCRP.value_string;
+              clients_found++;
+              break;
+              case 2:
+              client_3.cm = item.Groups[group_key].Teams[team_key].Queues[queue_key].client || '';
+              client_3.day = item.Groups[group_key].Teams[team_key].Queues[queue_key].trend_day;
+              client_3.week = item.Groups[group_key].Teams[team_key].Queues[queue_key].trend_week;
+              client_3.fcrp = item.Groups[group_key].Teams[team_key].Queues[queue_key].Metrics.FCRP.value_string;
+              clients_found++;
+              break;
+              default:
+
+            }
+            if(typeof client_1.day === 'undefined') {
+              clients_found = 0;
+              break;
+            }
+            if(clients_found >=3) {
+              break;
+            }
+          }
+        }
+      }
+    }
+    if(clients_found === 1) {
+      runnerStyle = "dash-w9";
+      trendStyle = "dash-w10";
+    } else if(clients_found === 2) {
+      runnerStyle = "dash-w45";
+      trendStyle = "dash-w5";
+    } else {
+      runnerStyle = "dash-w3";
+      trendStyle = "dash-w33";
+    }
+    %>
+    <div class='finish_line_fcr_row dash-h05 dash-w10'>
+      <div class='finish_line_fcr fcr_title dash-h10 dash-w1'>
+        <span class='gauge-text'>FCR</span>
+      </div>
+      <% if(clients_found >= 1) { %>
+        <div class='finish_line_fcr dash-h10 <%= runnerStyle %>'>
+          <img src="../img/runner.gif" id='img_runner_fcr' class="img_runner" alt="running man" />
+          <span class='gauge-text'><%= client_1.cm %></span><span id='FCRP_runner' class='gauge-text tat_space'>
+            <%
+            if(typeof client_1.fcrp !== 'undefined') {
+              %>
+              <%= client_1.fcrp %>%
+              <%
+            }
+            %>
+          </span>
+          <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_fcr' class="img_finish" alt="finish flag"  />
+          <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_fcr' class="img_runner_finish" alt="running man finished"  />
+        </div>
+        <%
+      }
+      %>
+      <% if(clients_found >= 2) { %>
+        <div class='finish_line_fcr dash-h10 <%= runnerStyle %>'>
+          <img src="../img/runner.gif" id='img_runner_fcr2' class="img_runner" alt="running man" />
+          <span class='gauge-text'><%= client_2.cm %></span><span id='FCRP_runner' class='gauge-text tat_space'>
+            <%
+            if(typeof client_2.fcrp !== 'undefined') {
+              %>
+              <%= client_2.fcrp %>%
+              <%
+            }
+            %>
+          </span>
+          <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_fcr2' class="img_finish" alt="finish flag"  />
+          <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_fcr2' class="img_runner_finish" alt="running man finished"  />
+        </div>
+        <%
+      }
+      %>
+      <% if(clients_found >= 3) { %>
+        <div class='finish_line_fcr dash-h10 <%= runnerStyle %>'>
+          <img src="../img/runner.gif" id='img_runner_fcr3' class="img_runner" alt="running man" />
+          <span class='gauge-text'><%= client_3.cm %></span><span id='FCRP_runner' class='gauge-text tat_space'>
+            <%
+            if(typeof client_3.fcrp !== 'undefined') {
+              %>
+              <%= client_3.fcrp %>%
+              <%
+            }
+            %>
+          </span>
+          <img src="../img/<%= server_theme.FINISH_IMG %>" id='img_finish_fcr3' class="img_finish" alt="finish flag"  />
+          <img src="../img/<%= server_theme.FINISH_RUNNER %>" id='img_runner_finish_fcr3' class="img_runner_finish" alt="running man finished"  />
+        </div>
+        <%
+      }
+      %>
+    </div>
+    <div class="graph-row-trend dash-h3 dash-w10">
+      <div style="position:relative;" class="dash-w10 dash-h10">
+        <div id="total-sparkline" class="sparkline dash-w10 dash-h10"></div>
+      </div>
+    </div>
+    <div class='ticker-text dash-h05 dash-w10'>
+      <%
+      var message = item.target_msg;
+      if(message === '' || message === null || typeof message === 'undefined') {
+        item.target_msg = " ";
+      }
+      %>
+      <marquee><span id='ticker'><%= item.target_msg %></span></marquee>
+    </div>
+    <div class="bottom-row-trend dash-w10 dash-h3">
+      <% if(clients_found >= 1) { %>
+        <div class="client-trend <%= trendStyle %> dash-h10">
+          <span class="trend-label"><%= client_1.cm %></span>
+          <div class="dash-w5 dash-h10">
+            <span class="trend-label">Today</span>
+            <%
+            var display_value = "";
+            //make sure there is a one product listed
+            if(client_1.day.length > 0) {
+              var trend_class = 'trend-down';
+              if(client_1.day[client_1.day.length-1].difference > 0) {
+                display_value = "+"+client_1.day[client_1.day.length-1].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_1.day[client_1.day.length-1].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_1_today_1' title="<%= client_1.day[client_1.day.length-1].product %>">
+                <div class="trend_display_container">
+                  <%= client_1.day[client_1.day.length-1].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_1.day[client_1.day.length-1].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a second product listed
+            if(client_1.day.length > 1) {
+              trend_class = 'trend-down';
+              if(client_1.day[client_1.day.length-2].difference > 0) {
+                display_value = "+"+client_1.day[client_1.day.length-2].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_1.day[client_1.day.length-2].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_1_today_2' title="<%= client_1.day[client_1.day.length-2].product %>">
+                <div class="trend_display_container">
+                  <%= client_1.day[client_1.day.length-2].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_1.day[client_1.day.length-2].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a 3rd product listed
+            if(client_1.day.length > 2) {
+              trend_class = 'trend-down';
+              if(client_1.day[client_1.day.length-3].difference > 0) {
+                display_value = "+"+client_1.day[client_1.day.length-3].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_1.day[client_1.day.length-3].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_1_today_3' title="<%= client_1.day[client_1.day.length-3].product %>">
+                <div class="trend_display_container">
+                  <%= client_1.day[client_1.day.length-3].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_1.day[client_1.day.length-3].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            %>
+          </div>
+          <div class="dash-w5 dash-h10">
+            <span class="trend-label">Week</span>
+            <%
+            //make sure there is a one product listed
+            if(client_1.week.length > 0) {
+              trend_class = 'trend-down';
+              if(client_1.week[client_1.week.length-1].difference > 0) {
+                display_value = "+"+client_1.week[client_1.week.length-1].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_1.week[client_1.week.length-1].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_1_week_1' title="<%= client_1.week[client_1.week.length-1].product %>">
+                <div class="trend_display_container">
+                  <%= client_1.week[client_1.week.length-1].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_1.week[client_1.week.length-1].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there are 2 products
+            if(client_1.week.length > 1) {
+              trend_class = 'trend-down';
+              if(client_1.week[client_1.week.length-2].difference > 0) {
+                display_value = "+"+client_1.week[client_1.week.length-2].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_1.week[client_1.week.length-2].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_1_week_2' title="<%= client_1.week[client_1.week.length-2].product %>">
+                <div class="trend_display_container">
+                  <%= client_1.week[client_1.week.length-2].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_1.week[client_1.week.length-2].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there are 3 products
+            if(client_1.week.length > 2) {
+              trend_class = 'trend-down';
+              if(client_1.week[client_1.week.length-3].difference > 0) {
+                display_value = "+"+client_1.week[client_1.week.length-3].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_1.week[client_1.week.length-3].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_1_week_3' title="<%= client_1.week[client_1.week.length-3].product %>">
+                <div class="trend_display_container">
+                  <%= client_1.week[client_1.week.length-3].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_1.week[client_1.week.length-3].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            %>
+          </div>
+        </div>
+        <%
+      }
+      %>
+      <% if(clients_found >= 2) { %>
+        <div class="client-trend <%= trendStyle %> dash-h10">
+          <span class="trend-label"><%= client_2.cm %></span>
+          <div class="dash-w5 dash-h10">
+            <span class="trend-label">Today</span>
+            <%
+            //make sure there is a one product listed
+            if(client_2.day.length > 0) {
+              trend_class = 'trend-down';
+              if(client_2.day[client_2.day.length-1].difference > 0) {
+                display_value = "+"+client_2.day[client_2.day.length-1].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_2.day[client_2.day.length-1].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_2_today_1' title="<%= client_2.day[client_2.day.length-1].product %>">
+                <div class="trend_display_container">
+                  <%= client_2.day[client_2.day.length-1].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_2.day[client_2.day.length-1].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a second product listed
+            if(client_2.day.length > 1) {
+              trend_class = 'trend-down';
+              if(client_2.day[client_2.day.length-2].difference > 0) {
+                display_value = "+"+client_2.day[client_2.day.length-2].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_2.day[client_2.day.length-2].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_2_today_2' title="<%= client_2.day[client_2.day.length-2].product %>">
+                <div class="trend_display_container">
+                  <%= client_2.day[client_2.day.length-2].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_2.day[client_2.day.length-2].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a 3rd product listed
+            if(client_2.day.length > 2) {
+              trend_class = 'trend-down';
+              if(client_2.day[client_2.day.length-3].difference > 0) {
+                display_value = "+"+client_2.day[client_2.day.length-3].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_2.day[client_2.day.length-3].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_2_today_3' title="<%= client_2.day[client_2.day.length-3].product %>">
+                <div class="trend_display_container">
+                  <%= client_2.day[client_2.day.length-3].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_2.day[client_2.day.length-3].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            %>
+          </div>
+          <div class="dash-w5 dash-h10">
+            <span class="trend-label">Week</span>
+            <%
+            //make sure there is a one product listed
+            if(client_2.week.length > 0) {
+              trend_class = 'trend-down';
+              if(client_2.week[client_2.week.length-1].difference > 0) {
+                display_value = "+"+client_2.week[client_2.week.length-1].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_2.week[client_2.week.length-1].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_2_week_1' title="<%= client_2.week[client_2.week.length-1].product %>">
+                <div class="trend_display_container">
+                  <%= client_2.week[client_2.week.length-1].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_2.week[client_2.week.length-1].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a second product listed
+            if(client_2.week.length > 1) {
+              trend_class = 'trend-down';
+              if(client_2.week[client_2.week.length-2].difference > 0) {
+                display_value = "+"+client_2.week[client_2.week.length-2].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_2.week[client_2.week.length-2].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_2_week_2' title="<%= client_2.week[client_2.week.length-2].product %>">
+                <div class="trend_display_container">
+                  <%= client_2.week[client_2.week.length-2].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_2.week[client_2.week.length-2].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a 3rd product listed
+            if(client_2.week.length > 2) {
+              trend_class = 'trend-down';
+              if(client_2.week[client_2.week.length-3].difference > 0) {
+                display_value = "+"+client_2.week[client_2.week.length-3].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_2.week[client_2.week.length-3].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_2_week_3' title="<%= client_2.week[client_2.week.length-3].product %>">
+                <div class="trend_display_container">
+                  <%= client_2.week[client_2.week.length-3].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_2.week[client_2.week.length-3].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            %>
+          </div>
+        </div>
+        <%
+      }
+      %>
+      <% if(clients_found >= 3) { %>
+        <div class="client-trend <%= trendStyle %> dash-h10">
+          <span class="trend-label"><%= client_3.cm %></span>
+          <div class="dash-w5 dash-h10">
+            <span class="trend-label">Today</span>
+            <%
+            //make sure there is a one product listed
+            if(client_3.day.length > 0) {
+              trend_class = 'trend-down';
+              if(client_3.day[client_3.day.length-1].difference > 0) {
+                display_value = "+"+client_3.day[client_3.day.length-1].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_3.day[client_3.day.length-1].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_3_today_1' title="<%= client_3.day[client_3.day.length-1].product %>">
+                <div class="trend_display_container">
+                  <%= client_3.day[client_3.day.length-1].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_3.day[client_3.day.length-1].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a second product listed
+            if(client_3.day.length > 1) {
+              trend_class = 'trend-down';
+              if(client_3.day[client_3.day.length-2].difference > 0) {
+                display_value = "+"+client_3.day[client_3.day.length-2].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_3.day[client_3.day.length-2].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_3_today_2' title="<%= client_3.day[client_3.day.length-2].product %>">
+                <div class="trend_display_container">
+                  <%= client_3.day[client_3.day.length-2].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_3.day[client_3.day.length-2].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a 3rd product listed
+            if(client_3.day.length > 2) {
+              trend_class = 'trend-down';
+              if(client_3.day[client_3.day.length-3].difference > 0) {
+                display_value = "+"+client_3.day[client_3.day.length-3].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_3.day[client_3.day.length-3].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_3_today_3' title="<%= client_3.day[client_3.day.length-3].product %>">
+                <div class="trend_display_container">
+                  <%= client_3.day[client_3.day.length-3].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_3.day[client_3.day.length-3].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            %>
+          </div>
+          <div class="dash-w5 dash-h10">
+            <span class="trend-label">Week</span>
+            <%
+            //make sure there is a one product listed
+            if(client_3.week.length > 0) {
+              trend_class = 'trend-down';
+              if(client_3.week[client_3.week.length-1].difference > 0) {
+                display_value = "+"+client_3.week[client_3.week.length-1].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_3.week[client_3.week.length-1].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_3_week_1' title="<%= client_3.week[client_3.week.length-1].product %>">
+                <div class="trend_display_container">
+                  <%= client_3.week[client_3.week.length-1].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_3.week[client_3.week.length-1].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a second product listed
+            if(client_3.week.length > 1) {
+              trend_class = 'trend-down';
+              if(client_3.week[client_3.week.length-2].difference > 0) {
+                display_value = "+"+client_3.week[client_3.week.length-2].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_3.week[client_3.week.length-2].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_3_week_2' title="<%= client_3.week[client_3.week.length-2].product %>">
+                <div class="trend_display_container">
+                  <%= client_3.week[client_3.week.length-2].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_3.week[client_3.week.length-2].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            //make sure there is a 3rd product listed
+            if(client_3.week.length > 2) {
+              trend_class = 'trend-down';
+              if(client_3.week[client_3.week.length-3].difference > 0) {
+                display_value = "+"+client_3.week[client_3.week.length-3].difference;
+                trend_class = 'trend-up';
+              } else {
+                display_value = client_3.week[client_3.week.length-3].difference;
+              }
+              %>
+              <div class="trend_container trend-products" id='trend_3_week_3' title="<%= client_3.week[client_3.week.length-3].product %>">
+                <div class="trend_display_container">
+                  <%= client_3.week[client_3.week.length-3].product %>
+                </div>
+                <div class="trend_percentages_container">
+                  <span class="<%= trend_class %>"><%= display_value %>% </span>
+                  <span class="trend_percentages">(<%= client_3.week[client_3.week.length-3].hist_percent %>%)</span>
+                </div>
+              </div>
+              <%
+            }
+            %>
+          </div>
+        </div>
+        <%
+      }
+      %>
+    </div>
+    <div class="small_xdays dash-h1">
+      <div class="dash-w10 dash-h10 xdays-div clickable" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"XDAYS","Outbound Communication");'>
+        <div class="dash-w10 dash-h10 boxstyle-hd-1d">
+          <div id="xdayselector1-hd" class="dash-w25 dash-h10 boxstyle-hd-1d" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"XDAYS","Outbound Communication", "1D HD");'>
+            <span class='xdays-header-little'>1</span>
+            <span id='xdayselector1-hd-val' class="little-NBR"></span>
+          </div>
+          <div id="xdayselector3-hd" class="dash-w25 dash-h10 boxstyle-hd-3d"  onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"XDAYS","Outbound Communication", "3D HD");'>
+            <span class='xdays-header-little'>3</span>
+            <span id='xdayselector3-hd-val' class="little-NBR"></span>
+          </div>
+          <div id="xdayselector5-hd" class="dash-w25 dash-h10 boxstyle-hd-5d" onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"XDAYS","Outbound Communication", "5D HD");'>
+            <span class='xdays-header-little'>5</span>
+            <span id='xdayselector5-hd-val' class="little-NBR"></span>
+          </div>
+          <div id="xdayselector7-hd" class="dash-w25 dash-h10 boxstyle-hd-7d"  onclick='javascript:get_sr_list("<%= item.mnemonic %>",null,null,null,"XDAYS","Outbound Communication", "7D HD");'>
+            <span class='xdays-header-little'>7</span>
+            <span id='xdayselector7-hd-val' class="little-NBR"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% include choose_team_dialog_inc.ejs %>
